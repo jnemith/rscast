@@ -139,32 +139,38 @@ impl World {
             allowed.y = false;
         }
 
-        match &self.player.action {
-            Action::Move(Direction::Up) if allowed.x == true => {
-                self.player.pos.x = new_pos.x;
-                self.player.pos.y = new_pos.y;
-            },
-            Action::Move(Direction::Down) if allowed.y == true => {
-                self.player.pos.x = self.player.pos.x - self.player.dir.x * move_speed;
-                self.player.pos.y = self.player.pos.y - self.player.dir.y * move_speed;
-            },
-            Action::Rotate(dir) => {
-                if let Direction::Right = *dir {
-                    rot_speed = -rot_speed;
-                }
-                let old_dir_x = self.player.dir.x;
-                self.player.dir.x =
-                    (self.player.dir.x * rot_speed.cos()) - (self.player.dir.y * rot_speed.sin());
-                self.player.dir.y =
-                    (old_dir_x * rot_speed.sin()) + (self.player.dir.y * rot_speed.cos());
+        for action in self.player.actions.iter() {
+            //
+            match &action {
+                Action::Move(Direction::Up) if allowed.x == true => {
+                    self.player.pos.x = new_pos.x;
+                    self.player.pos.y = new_pos.y;
+                },
+                Action::Move(Direction::Down) if allowed.y == true => {
+                    self.player.pos.x = self.player.pos.x - self.player.dir.x * move_speed;
+                    self.player.pos.y = self.player.pos.y - self.player.dir.y * move_speed;
+                },
+                Action::Rotate(dir) => {
+                    if let Direction::Right = *dir {
+                        rot_speed = -(rot_speed.abs());
+                    } else {
+                        rot_speed = rot_speed.abs();
+                    }
 
-                let old_camera_x = self.player.camera.x;
-                self.player.camera.x =
-                    (self.player.camera.x * rot_speed.cos()) - (self.player.camera.y * rot_speed.sin());
-                self.player.camera.y =
-                    (old_camera_x * rot_speed.sin()) + (self.player.camera.y * rot_speed.cos());
-            },
-            _ => ()
+                    let old_dir_x = self.player.dir.x;
+                    self.player.dir.x =
+                        (self.player.dir.x * rot_speed.cos()) - (self.player.dir.y * rot_speed.sin());
+                    self.player.dir.y =
+                        (old_dir_x * rot_speed.sin()) + (self.player.dir.y * rot_speed.cos());
+    
+                    let old_camera_x = self.player.camera.x;
+                    self.player.camera.x =
+                        (self.player.camera.x * rot_speed.cos()) - (self.player.camera.y * rot_speed.sin());
+                    self.player.camera.y =
+                        (old_camera_x * rot_speed.sin()) + (self.player.camera.y * rot_speed.cos());
+                },
+                _ => ()
+            }
         }
     }
 }
