@@ -97,10 +97,6 @@ impl World {
         if draw_start < 0 {
             draw_start = 0;
         }
-        let mut draw_end = (line_height as i32 / 2) + (height as  i32 / 2);
-        if draw_end > height as i32 {
-            draw_end = height as i32 - 1;
-        }
 
         // Set color
         let mut color = Color::RGB(0, 0, 0);
