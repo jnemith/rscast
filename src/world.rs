@@ -122,33 +122,30 @@ impl World {
 
     pub fn update_player(&mut self, frame_time: f64) {
         // Update player position and direction
-        let move_speed = frame_time * 5.;
+        let mut move_speed = frame_time * self.player.speed as f64;
         let mut rot_speed = frame_time * 3.;
-        
-        let new_pos = vec2(
-            self.player.pos.x + self.player.dir.x * move_speed,
-            self.player.pos.y + self.player.dir.y * move_speed,
-        );
-
-        let mut allowed = vec2(true, true);
-
-        if let Space::Wall(_) = self.map.walls[new_pos.x as usize][self.player.pos.y as usize] {
-            allowed.x = false;
-        }
-        if let Space::Wall(_) = self.map.walls[self.player.pos.x as usize][new_pos.y as usize] {
-            allowed.y = false;
-        }
 
         for action in self.player.actions.iter() {
-            //
             match &action {
-                Action::Move(Direction::Up) if allowed.x == true => {
-                    self.player.pos.x = new_pos.x;
-                    self.player.pos.y = new_pos.y;
-                },
-                Action::Move(Direction::Down) if allowed.y == true => {
-                    self.player.pos.x = self.player.pos.x - self.player.dir.x * move_speed;
-                    self.player.pos.y = self.player.pos.y - self.player.dir.y * move_speed;
+                Action::Move(dir) => {
+                    if let Direction::Down = *dir {
+                        move_speed = -(move_speed.abs());
+                    } else {
+                        move_speed = move_speed.abs();
+                    }
+
+                    let new_pos = self.player.pos + (self.player.dir * move_speed);
+                    let allowed = vec2(
+                        self.map.walls[new_pos.x as usize][self.player.pos.y as usize] == Space::Empty,
+                        self.map.walls[self.player.pos.x as usize][new_pos.y as usize] == Space::Empty,
+                    );
+
+                    if allowed.x {
+                        self.player.pos.x = new_pos.x;
+                    }
+                    if allowed.y {
+                        self.player.pos.y = new_pos.y;
+                    }
                 },
                 Action::Rotate(dir) => {
                     if let Direction::Right = *dir {
@@ -169,7 +166,6 @@ impl World {
                     self.player.camera.y =
                         (old_camera_x * rot_speed.sin()) + (self.player.camera.y * rot_speed.cos());
                 },
-                _ => ()
             }
         }
     }
