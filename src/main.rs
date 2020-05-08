@@ -34,11 +34,11 @@ fn main() -> Result<(), String> {
 100000000000000000000001
 100000000000000000000001
 100000000000000000000001
+100000020000000000000001
+100000020000000000000001
+100000020000000000000001
+122222220000000000000001
 100000000000000000000001
-100000000000000000000001
-100000000000000000000001
-100000220000000000000001
-100000220000000000000001
 100000000000000000000001
 100000000000000000000001
 100000000000000000000001
@@ -60,8 +60,6 @@ fn main() -> Result<(), String> {
     let mut old_time;
     let mut frame_time = 0.;
 
-    let mut pos;
-
     canvas.set_draw_color(Color::RGB(102, 102, 102));
     canvas.clear();
     canvas.present();
@@ -75,42 +73,31 @@ fn main() -> Result<(), String> {
 
                 // Arrow keys
                 Event::KeyDown { keycode: Some(Keycode::Up), repeat: false, ..} => {
-                    world.player.actions.push(Action::Move(Direction::Up));
+                    world.player.new_action(Action::Move(Direction::Up));
                 },
                 Event::KeyDown { keycode: Some(Keycode::Down), repeat: false, ..} => {
-                    world.player.actions.push(Action::Move(Direction::Down)); 
+                    world.player.new_action(Action::Move(Direction::Down)); 
                 },
                 Event::KeyDown { keycode: Some(Keycode::Left), repeat: false, ..} => {
-                    world.player.actions.push(Action::Rotate(Direction::Left));
+                    world.player.new_action(Action::Rotate(Direction::Left));
                 },
                 Event::KeyDown { keycode: Some(Keycode::Right), repeat: false, ..} => {
-                    world.player.actions.push(Action::Rotate(Direction::Right));
+                    world.player.new_action(Action::Rotate(Direction::Right));
                 },
 
+                // Arrow keys - key up
                 Event::KeyUp { keycode: Some(Keycode::Up), repeat: false, ..} => {
-                    pos = world.player.actions.iter()
-                        .position(|action| *action == Action::Move(Direction::Up))
-                        .unwrap();
-                    world.player.actions.swap_remove(pos);
+                    world.player.remove_action(Action::Move(Direction::Up));
                 },
                 Event::KeyUp { keycode: Some(Keycode::Down), repeat: false, ..} => {
-                    pos = world.player.actions.iter()
-                        .position(|action| *action == Action::Move(Direction::Down))
-                        .unwrap();
-                    world.player.actions.swap_remove(pos);
-                }
+                    world.player.remove_action(Action::Move(Direction::Down));
+                },
                 Event::KeyUp { keycode: Some(Keycode::Left), repeat: false, ..} => {
-                    pos = world.player.actions.iter()
-                        .position(|action| *action == Action::Rotate(Direction::Left))
-                        .unwrap();
-                    world.player.actions.swap_remove(pos);
-                }
+                    world.player.remove_action(Action::Rotate(Direction::Left));
+                },
                 Event::KeyUp { keycode: Some(Keycode::Right), repeat: false, ..} => {
-                    pos = world.player.actions.iter()
-                        .position(|action| *action == Action::Rotate(Direction::Right))
-                        .unwrap();
-                    world.player.actions.swap_remove(pos);
-                }
+                    world.player.remove_action(Action::Rotate(Direction::Right));
+                },
                 _ => (),
             }
         }

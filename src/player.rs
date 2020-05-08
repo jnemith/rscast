@@ -32,4 +32,15 @@ impl Player {
             actions: Vec::new(),
         }
     }
+
+    pub fn new_action(&mut self, action: Action) {
+        self.actions.push(action);
+    }
+
+    pub fn remove_action(&mut self, action: Action) {
+        let pos = self.actions.iter()
+            .position(|act| *act == action )
+            .unwrap();
+        self.actions.swap_remove(pos);
+    }
 }
