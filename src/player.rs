@@ -1,5 +1,7 @@
 use cgmath::{Vector2};
 
+const PLAYER_SPEED: u32 = 7;
+
 #[derive(PartialEq)]
 pub enum Direction {
     Up,
@@ -26,7 +28,7 @@ impl Player {
     pub fn new() -> Self {
         Player {
             pos: Vector2::new(12., 9.),
-            speed: 7,
+            speed: PLAYER_SPEED,
             dir: Vector2::new(-1., 0.),
             camera: Vector2::new(0., 0.66),
             actions: Vec::new(),
