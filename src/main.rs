@@ -1,5 +1,6 @@
 mod world;
 mod player;
+mod settings;
 
 use crate::player::{Action, Direction};
 
@@ -10,13 +11,12 @@ use sdl2::{
 };
 use std::time::{SystemTime, UNIX_EPOCH};
 
-const WIDTH: u32 = 800;
-const HEIGHT: u32 = 600;
-
 fn main() -> Result<(), String> {
+    let settings = settings::Settings::new();
+
     let sdl = sdl2::init().unwrap();
     let video = sdl.video().unwrap();
-    let window = video.window("rscast", WIDTH, HEIGHT)
+    let window = video.window("rscast", settings.width, settings.height)
         .resizable()
         .position_centered()
         .build()
@@ -107,16 +107,14 @@ fn main() -> Result<(), String> {
 
         world.update_player(frame_time);
         
-        for x in 0..WIDTH {
-            world.cast(x as usize, WIDTH, HEIGHT, &mut canvas);
+        for x in 0..settings.width {
+            world.cast(x as usize, &mut canvas, &settings);
         }
         canvas.present();
 
         old_time = time;
         time = get_time();
         frame_time = (time - old_time) as f64 / 1_000_000_000.;
-        // println!("{}", 1. / frame_time);
-        // std::thread::sleep(Duration::new(0, 1_000_000_000u32 / 60));
     }
     Ok(())
 }

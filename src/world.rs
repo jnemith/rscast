@@ -1,5 +1,7 @@
 use crate::player::{Action, Direction, Player};
-use cgmath::{ vec2, };
+use crate::settings::Settings;
+
+use cgmath::vec2;
 use sdl2::{
     pixels::Color,
     render::WindowCanvas,
@@ -37,9 +39,9 @@ impl World {
         }
     }
 
-    pub fn cast(&mut self, x: usize, width: u32, height: u32, canvas: &mut WindowCanvas) {
+    pub fn cast(&mut self, x: usize, canvas: &mut WindowCanvas, settings: &Settings) {
         
-        let camera_x = 2. * (x as f64 / width as f64) - 1.;
+        let camera_x = 2. * (x as f64 / settings.width as f64) - 1.;
         let ray_dir = self.player.dir + self.player.camera * camera_x;
 
         let delta_dist = vec2(
@@ -91,9 +93,9 @@ impl World {
         };
 
         // Calculate line to draw
-        let line_height = height as f64 / wall_dist;
+        let line_height = settings.height as f64 / wall_dist;
 
-        let mut draw_start = (-line_height as i32 / 2) + (height as  i32 / 2);
+        let mut draw_start = (-line_height as i32 / 2) + (settings.height as  i32 / 2);
         if draw_start < 0 {
             draw_start = 0;
         }
