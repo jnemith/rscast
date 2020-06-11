@@ -1,2 +1,3 @@
 This raycaster is based on [Lode Vandevenne's C++ implementation](https://lodev.org/cgtutor/raycasting.html).
-I'm new to using Rust so this project serves as a learning area for me. The code in this project is very messy currently.
+
+Unfinished raycaster
